@@ -1,39 +1,33 @@
 #!/usr/bin/python3
 """index.py to connect to API"""
-import app_views from api.v1.views
-hbnbClass = {
-    'Amenity': Amenity,
-    'City': City,
-    'Place': Place,
-    'State': State,
-    'Review': Review,
-    'User': User
-}
+from api.v1.views import app_views
+from flask import Flask, Blueprint, jsonify
+from models import storage
+
 
 hbnbText = {
-    "amenities",
-    "cities",
-    "places",
-    "reviews",
-    "states",
-    "users"
+    "amenities": "Amenity",
+    "cities": "City",
+    "places": "Place",
+    "reviews": "Review",
+    "states": "State",
+    "users": "User"
 }
 
 
-@app_views.route('/status')
+@app_views.route('/status', strict_slashes=False)
 def hbnbStatus():
     """hbnbStatus"""
-    return ('{\n\t"status": "OK"\n}')
+    return jsonify({"status": "OK"})
 
-@app_views.route('/api/v1/stats')
+
+@app_views.route('/stats', strict_slashes=False)
 def hbnbStats():
     """hbnbStats"""
-    numClass = len(hbnbText)
-    str = '{\n\t"'
-    for count in range(num):
-        str += hbnbClass[count][0]
-        str += "\": "
-        str += str(storage.count(hbnbClass[count][0]))
-        if count < numClass:
-            str += ",\n"
-    str += "\n}\n"
+    return_dict = {}
+    for key, value in hbnbText.items():
+        return_dict[key] = storage.count(value)
+    return jsonify(return_dict)
+
+if __name__ == "__main__":
+    pass
